@@ -1,0 +1,20 @@
+# ignore everything to begin with.
+*
+
+# git files.
+!.gitignore
+!*.md
+
+# license files.
+!LICENSE
+
+# gradle files.
+!gradlew*
+!*.gradle
+
+# source files
+!*.groovy
+!*.java
+
+# gradle plugin files.
+!lgio.properties
