@@ -26,11 +26,16 @@ buildscript {
 
 **Henceforth you can use it like:**
 ```groovy
+apply plugin 'lgio'
+
+// In some task:
 lgio.println( "Reading signing configuration" )
+
 def storeFile = file( lgio.readLineReq( "Keystore file, rel path" ) )
 def keyAlias = io.readLineReq( "Key alias" )
 def storePw = io.readPasswordReq( "Keystore password" )
 def keyPw = io.readPasswordReq( "Key password" )
+
 ```
 
 A method that ends with Req, for example readLineReq does the same as readLine
@@ -55,4 +60,4 @@ License
 
 LGIO is licensed under **Apache License 2.0**, see LICENSE for more information.
 
-@toxbee is the developing organisation and is currently maintained by @Centril
+toxbee is the developing organisation and is currently maintained by Centril
