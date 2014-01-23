@@ -7,17 +7,24 @@ dependencies {
 }
 
 uploadArchives {
+	def gitroscm = "https://github.com/toxbee/gradle-plugin-lgio"
+
 	repositories.mavenDeployer {
 		repository( url: uri( "maven-deploy" ) )
 		pom.version = '0.1'
 		pom.groupId = 'se.toxbee.lgio'
 		pom.artifactId = 'gradle-plugin-lgio'
 		pom.project {
+			scm {
+				url "${gitroscm}";
+				connection "${gitroscm}";
+			}
+
 			licenses {
 				license {
 					name 'The Apache Software License, Version 2.0'
 					url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-					distribution 'release'
+					distribution 'repo'
 				}
 			}
 		}
