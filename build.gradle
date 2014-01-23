@@ -1,0 +1,11 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+}
+
+// Task to generate a gradle wrapper.
+task wrapper( type: Wrapper ) {
+	gradleVersion = '1.10'
+}
