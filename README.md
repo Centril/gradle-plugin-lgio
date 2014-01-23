@@ -1,7 +1,8 @@
 LGIO, Gradle plugin
 ===================
 
-LGIO is a LightweightGradleIO plugin that solves System.console() being null by using a GUI in those cases
+LGIO is a LightweightGradleIO plugin that solves the problem of
+System.console() being null by using a GUI in those cases
 
 Usage
 -------------------
@@ -9,26 +10,28 @@ Usage
 Using LGIO in your project is quite staightforward.
 
 **Add the following to your buildscript:**
-
-  	buildscript {
-  		repositories {
-  			maven {
-  				url 'https://github.com/toxbee/mvn-repo/raw/master/maven-deploy'
-  			}
-  			mavenCentral()
-  		}
-  		dependencies {
-  			classpath 'se.toxbee.lgio:gradle-plugin-lgio:0.1'
-  		}
+```groovy
+buildscript {
+  repositories {
+  	maven {
+  		url 'https://github.com/toxbee/mvn-repo/raw/master/maven-deploy'
   	}
+  	mavenCentral()
+  }
+  dependencies {
+  	classpath 'se.toxbee.lgio:gradle-plugin-lgio:0.1'
+  }
+}
+```
 
 **Henceforth you can use it like:**
-
-    lgio.println( "Reading signing configuration" )
-    def storeFile = file( lgio.readLineReq( "Keystore file, rel path" ) )
-    def keyAlias = io.readLineReq( "Key alias" )
-    def storePw = io.readPasswordReq( "Keystore password" )
-    def keyPw = io.readPasswordReq( "Key password" )
+```groovy
+lgio.println( "Reading signing configuration" )
+def storeFile = file( lgio.readLineReq( "Keystore file, rel path" ) )
+def keyAlias = io.readLineReq( "Key alias" )
+def storePw = io.readPasswordReq( "Keystore password" )
+def keyPw = io.readPasswordReq( "Key password" )
+```
 
 A method that ends with Req, for example readLineReq does the same as readLine
 but the *Req version throws an exception when an empty string is given by the user/client.
@@ -36,8 +39,9 @@ but the *Req version throws an exception when an empty string is given by the us
 **Normally, lgio & io can be used interchangably, they are aliases.**
 
 To stop lgio from io as an alias, set:
-
-    project.ext.lgioAliasDisable = true
+```groovy
+project.ext.lgioAliasDisable = true
+```
 
 Bugs / Issues / Feature requests
 --------------------------------
