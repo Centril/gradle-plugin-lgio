@@ -1,9 +1,30 @@
 apply plugin: 'groovy'
+apply plugin: 'maven'
 
 dependencies {
     compile gradleApi()
     compile localGroovy()
 }
+
+uploadArchives {
+	repositories.mavenDeployer {
+		repository( url: uri( "maven-deploy" ) )
+		pom.version = '0.1'
+		pom.groupId = 'se.toxbee.lgio'
+		pom.artifactId = 'gradle-plugin-lgio'
+		pom.project {
+			licenses {
+				license {
+					name 'The Apache Software License, Version 2.0'
+					url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					distribution 'release'
+				}
+			}
+		}
+	}
+}
+
+build.dependsOn uploadArchives
 
 // Task to generate a gradle wrapper.
 task wrapper( type: Wrapper ) {

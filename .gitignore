@@ -73,3 +73,6 @@ out/
 
 # Keystore #
 *.keystore
+
+# maven
+maven-deploy/
