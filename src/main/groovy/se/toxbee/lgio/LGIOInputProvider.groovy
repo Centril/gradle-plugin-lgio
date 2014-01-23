@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Mazdak Farrokhzad <twingoow@gmail.com>
+ * Copyright 2014 toxbee.se
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,9 @@ import javax.swing.JTextField;
 /**
  * LGIOInputProvider provides a unified way for LGIOPlugin
  * to get the same input data from both GUI & console.
+ *
+ * @version 0.1
+ * @author Mazdak Farrokhzad <twingoow@gmail.com>
  */
 interface LGIOInputProvider {
 	static abstract class Base implements LGIOInputProvider {

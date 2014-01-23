@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Mazdak Farrokhzad <twingoow@gmail.com>
+ * Copyright 2014 toxbee.se
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ import javax.swing.JTextField;
 
 /**
  * LGIOTextProvider uses Console.readLine or a JTextField.
+ *
+ * @version 0.1
+ * @author Mazdak Farrokhzad <twingoow@gmail.com>
  */
 class LGIOTextProvider extends LGIOInputProvider.Base {
 	@Override
