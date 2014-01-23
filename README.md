@@ -1,7 +1,7 @@
 LGIO, Gradle plugin
 ===================
 
-LGIO is a LightweightGradleIO plugin that solves the problem of
+LGIO *(__L__ightweight __G__radle __IO__)* is a plugin that solves the problem of
 System.console() being null by using a GUI in those cases
 
 Usage
@@ -35,7 +35,6 @@ def storeFile = file( lgio.readLineReq( "Keystore file, rel path" ) )
 def keyAlias = io.readLineReq( "Key alias" )
 def storePw = io.readPasswordReq( "Keystore password" )
 def keyPw = io.readPasswordReq( "Key password" )
-
 ```
 
 A method that ends with Req, for example readLineReq does the same as readLine
@@ -50,7 +49,6 @@ project.ext.lgioAliasDisable = true
 
 Bugs / Issues / Feature requests
 --------------------------------
-
 Please use the issue system that github provides to report bugs/issues or request an enhancement.
 
 This project is in its infancy, so pull requests are more than welcome.
