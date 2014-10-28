@@ -103,6 +103,11 @@ dependencies {
 }
 
 /*
+ * JDK7 compatibility.
+ */
+sourceCompatibility = 1.7
+
+/*
  * Publishing config:
  */
 // -sources.jar generation
