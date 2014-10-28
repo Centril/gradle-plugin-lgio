@@ -1,39 +1,207 @@
-apply plugin: 'groovy'
-apply plugin: 'maven'
+/*
+ * Copyright 2014 Centril / Mazdak Farrokhzad <twingoow@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-dependencies {
-    compile gradleApi()
-    compile localGroovy()
+/*
+ * Config:
+ */
+ext.giturl = "https://github.com/${gitrepo}"
+ext.spock = [
+		// Testing framework versions.
+		spockVersion : '0.7-groovy-2.0',
+		groovyVersion: '2.3.6',
+		clibVersion  : '3.1',
+		objenesisVersion: '2.1'
+]
+
+/*
+ * Buildscript dependencies:
+ */
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath 'com.github.ben-manes:gradle-versions-plugin:0.5'
+		classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.+'
+		classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.+'
+		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6'
+	}
 }
 
-uploadArchives {
-	def gitroscm = "https://github.com/toxbee/gradle-plugin-lgio"
+/*
+ * Apply plugins:
+ */
+['groovy', 'idea', 'maven-publish', 'jacoco',
+ 'com.github.kt3k.coveralls', 'com.jfrog.bintray',
+ 'com.github.ben-manes.versions', 'com.github.hierynomus.license']
+		.each { apply plugin: it }
 
-	repositories.mavenDeployer {
-		repository( url: uri( "maven-deploy" ) )
-		pom.version = '0.1'
-		pom.groupId = 'se.toxbee.lgio'
-		pom.artifactId = 'gradle-plugin-lgio'
-		pom.project {
-			scm {
-				url "${gitroscm}";
-				connection "${gitroscm}";
+/*
+ * Wrapper:
+ */
+task wrapper( type: Wrapper ) {
+	gradleVersion = '2.10'
+}
+
+/*
+ * Tasks for clearing:
+ */
+task cleanMaven( type: Delete ) { delete 'maven-deploy' }
+task cleanGradle( type: Delete ) { delete '.gradle' }
+task cleanAll( dependsOn: [clean, cleanGradle, cleanMaven, cleanIdea] ) {}
+task c( dependsOn: cleanAll )
+
+
+/*
+ * License:
+ */
+license {
+	header = rootProject.file('config/HEADER')
+	strictCheck = true
+	ignoreFailures = false
+	useDefaultMappings = true
+	ext.year = '2014'
+}
+
+/*
+ * jacoco:
+ */
+jacocoTestReport {
+    reports {
+    	// coveralls plugin depends on xml format report
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+/*
+ * Dependencies:
+ */
+repositories {
+	jcenter()
+}
+dependencies {
+	compile gradleApi()
+	compile localGroovy()
+	testCompile "org.codehaus.groovy:groovy-all:${spock.groovyVersion}"
+	testCompile "org.spockframework:spock-core:${spock.spockVersion}"
+	testCompile "cglib:cglib-nodep:${spock.clibVersion}"
+	testCompile "org.objenesis:objenesis:${spock.objenesisVersion}"
+}
+
+/*
+ * Publishing config:
+ */
+// -sources.jar generation
+task sourceJar( type: Jar ) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+// -groovydoc.jar generation
+task groovydocJar( type: Jar, dependsOn: groovydoc ) {
+	classifier = 'groovydoc'
+	from groovydoc.destinationDir
+}
+publishing {
+	ext.mavenArtifacts = [sourceJar, groovydocJar]
+
+	repositories {
+		maven {
+			url uri( "maven-deploy" )
+		}
+	}
+
+	publications {
+		maven( MavenPublication ) {
+			from components.java
+
+			mavenArtifacts.each {
+				artifact( it ) {
+					classifier = it.classifier
+				}
 			}
 
-			licenses {
-				license {
-					name 'The Apache Software License, Version 2.0'
-					url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-					distribution 'repo'
+			def gitconn = "scm:git:git@github.com:${gitrepo}.git"
+
+			pom.withXml {
+				asNode().children().last() + {
+					resolveStrategy = Closure.DELEGATE_FIRST
+					name projname
+					description projdesc
+					url giturl
+					scm {
+						url giturl
+						connection gitconn
+						developerConnection gitconn
+					}
+					inceptionYear '2014'
+					licenses {
+						license {
+							name 'The Apache Software License, Version 2.0'
+							url 'http://www.apache.org/license/LICENSE-2.0.txt'
+							distribution 'repo'
+						}
+					}
+					developers {
+						developer {
+							id 'Centril'
+							name 'Mazdak Farrokhzad'
+							email 'twingoow@gmail.com'
+						}
+					}
 				}
 			}
 		}
 	}
 }
 
-build.dependsOn uploadArchives
+/*
+ * Bintray config:
+ */
+def prop( String propertyName, defaultValue ) {
+	hasProperty( propertyName ) ? getProperty( propertyName ) : defaultValue
+}
 
-// Task to generate a gradle wrapper.
-task wrapper( type: Wrapper ) {
-	gradleVersion = '1.10'
+bintray {
+	// this usually comes form gradle.properties file in ~/.gradle
+	user = prop( "bintrayUser", '' )
+	key  = prop( "bintrayKey", '' )
+
+	// see publications closure
+	publish = true
+	publications = ['maven']
+	pkg {
+		repo = 'maven'
+		name = "${group}:${projname}"
+		desc = projdesc
+		licenses = ['Apache-2.0']
+		labels = ['gradle', 'plugin', 'io', 'input-output', 'console', 'terminal']
+		websiteUrl = giturl
+		issueTrackerUrl = "{$giturl}/issues"
+		vcsUrl = giturl
+		version {
+			name = project.version
+            vcsTag = project.version
+			attributes = [
+				'gradle-plugin': "${group}:${group}:${projname}"
+			]
+            gpg {
+            	sign = true
+            }
+        }
+		publicDownloadNumbers = true
+	}
 }

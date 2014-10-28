@@ -1,0 +1,16 @@
+language: groovy
+
+jdk:
+  - openjdk7
+
+env:
+- TERM=dumb
+
+before_install:
+- chmod +x gradlew
+
+script:
+- ./gradlew clean build
+
+after_success:
+- ./gradlew jacocoTestReport coveralls

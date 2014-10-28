@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 toxbee.se
+ * Copyright 2014 Centril / Mazdak Farrokhzad <twingoow@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package se.toxbee.lgio
 
-import javax.swing.JPasswordField
-import javax.swing.JTextField
+package se.centril.lgio;
+
+import javax.swing.JTextField;
 
 /**
- * LGIOPasswordProvider uses Console.readPassword or a JPasswordField.
+ * LGIOTextProvider uses Console.readLine or a JTextField.
  *
  * @version 0.1
  * @author Mazdak Farrokhzad <twingoow@gmail.com>
  */
-class LGIOPasswordProvider extends LGIOInputProvider.Base {
+class LGIOTextProvider extends LGIOInputProvider.Base {
 	@Override
-	JTextField generateInput() { new JPasswordField() }
+	JTextField generateInput() { new JTextField() }
 
 	@Override
-	String getData() {
-		def char[] pwd = ((JPasswordField) input).getPassword()
-		def retr = new String( pwd )
-		// Clear pwd for security.
-		for ( int i = 0; i < pwd.length; ++i ) {
-			pwd[i] = 0;
-		}
-		return retr
-	}
+	String getData() { input.getText() }
 
 	@Override
-	String readConsole( Console c, String print ) { new String( c.readPassword( print ) ) }
+	String readConsole( Console c, String print ) { c.readLine( print ) }
 }
